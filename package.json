@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "prepublish": "npm run clean && npm run build",
+    "prepack": "rm -rf lib/__tests__",
     "build": "tsc",
     "test": "npm run build && jest --coverage",
     "clean": "rm -rf coverage/* lib/*",
