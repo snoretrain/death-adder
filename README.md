@@ -9,7 +9,7 @@ interface. Death Adder favors minimizing dependencies and keeping the
 feature set narrow.
 
 ## Installation
-To install Death Adder in your project, simply install it
+To add Death Adder to your project, simply install it
 
 with npm:
 ```
