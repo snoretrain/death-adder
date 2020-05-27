@@ -18,10 +18,12 @@ module.exports = {
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     'prettier/prettier': ['error'],
-    'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
-    'no-useless-constructor': 'off',
     '@typescript-eslint/no-useless-constructor': 'error',
+    'no-useless-constructor': 'off',
+    'no-restricted-syntax': 'off',
+    'no-unused-vars': 'off',
+    'class-methods-use-this': 'off',
     'import/extensions': ['error', 'ignorePackages', {
       'ts': 'never'
     }]
@@ -30,8 +32,29 @@ module.exports = {
     'import/resolver': {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        moduleDirectory: ['node_modules', 'src/']
+        moduleDirectory: ['node_modules']
       }
     }
-  }
+  },
+  overrides: [
+    {
+      'files': ['src/__tests__/resources/*.ts'],
+      'rules': {
+        'max-classes-per-file': 'off',
+        '@typescript-eslint/no-unused-vars': 'off'
+      }
+    },
+    {
+      'files': ['src/middleware/MiddlewareExecutor.ts'],
+      'rules': {
+        'no-await-in-loop': 'off'
+      }
+    },
+    {
+      'files': ['src/router/Router.ts'],
+      'rules': {
+        'new-cap': 'off'
+      }
+    }
+  ]
 };
