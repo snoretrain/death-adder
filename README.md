@@ -1,28 +1,28 @@
-# Orb Weaver
+# Pit Viper
 
 A web application library for Node.js
 
 ## Goals
-Orb Weaver aims to be a a simple and lightweight library for building
+Pit Viper aims to be a a simple and lightweight library for building
 web applications, specifically RESTful APIs, with a simple and readable
-interface. Orb Weaver favors minimizing dependencies and keeping the
+interface. Pit Viper favors minimizing dependencies and keeping the
 feature set narrow.
 
 ## Installation
-To install Orb Weaver in your project, simply install it
+To install Pit Viper in your project, simply install it
 
 with npm:
 ```
-npm install orb-weaver
+npm install pit-viper
 ```
 or yarn:
 ```
-yarn add orb-weaver
+yarn add pit-viper
 ```
 
 ## Usage
 
-The use of Orb Weaver consists of three primary components. A `Server`
+The use of Pit Viper consists of three primary components. A `Server`
 is responsible for listening to network requests and dispatching them
 to a `Router`. The `Router` is responsible for associating the path
 of the request to a specific web resource. An `Endpoint` handles
@@ -32,10 +32,10 @@ In code, the pattern looks like the following:
 
 ```javascript
 // Using ES6 Imports
-import { Server, Router, Endpoint } from 'orb-weaver';
+import { Server, Router, Endpoint } from 'pit-viper';
 
 // Using require
-const { Server, Router, Endpoint } = require('orb-weaver');
+const { Server, Router, Endpoint } = require('pit-viper');
 
 
 // Create the definitions for your Endpoints
@@ -83,7 +83,7 @@ server.listen(3000);
 
 The use of middleware allows the selective administration of
 certain actions based on the path or requested resource. In order
-to use Orb Weaver middlewares, add a middleware function to an
+to use Pit Viper middlewares, add a middleware function to an
 `Endpoint` or instance of `Router`. Importantly, the return value
 of a middleware determines if the application will continue
 attempting to handle the request. A return value of false immediately
@@ -94,7 +94,7 @@ await the resolution of a `Promise` .
  
 
 ```javascript
-import { Server, Router, Endpoint } from 'orb-weaver';
+import { Server, Router, Endpoint } from 'pit-viper';
 
 class EndpointWithMiddleware extends Endpoint {
   constructor() {
