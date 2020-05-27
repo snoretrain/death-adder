@@ -1,5 +1,5 @@
 {
-  "name": "pit-viper",
+  "name": "death-adder",
   "version": "0.0.0",
   "description": "A resource routing library for node.js",
   "main": "./lib/index.js",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/snoretrain/pit-viper.git"
+    "url": "git+https://github.com/snoretrain/death-adder.git"
   },
   "keywords": [
     "router",
@@ -30,9 +30,9 @@
   "author": "David Sornberger <david876534@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/snoretrain/pit-viper/issues"
+    "url": "https://github.com/snoretrain/death-adder/issues"
   },
-  "homepage": "https://github.com/snoretrain/pit-viper#readme",
+  "homepage": "https://github.com/snoretrain/death-adder#readme",
   "devDependencies": {
     "@types/jest": "^25.2.2",
     "@types/node": "^14.0.1",
