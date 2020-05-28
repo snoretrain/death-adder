@@ -8,10 +8,11 @@
     "lib"
   ],
   "scripts": {
-    "prepublish": "npm run clean && npm run build",
+    "prepublish": "npm run test && npm run clean && npm run build",
     "prepack": "rm -rf lib/__tests__",
     "build": "tsc",
-    "test": "npm run build && jest --coverage",
+    "buildtest": "tsc --p tsconfig.test.json",
+    "test": "npm run buildtest && jest --coverage",
     "clean": "rm -rf coverage/* lib/*",
     "lint": "eslint 'src/**/*.ts'",
     "fix": "eslint 'src/**/*.ts' --fix",
@@ -60,6 +61,7 @@
     "testMatch": [
       "<rootDir>/lib/**/*.spec.js"
     ],
+    "coveragePathIgnorePatterns": ["index.js", "lib/__tests__"],
     "globals": {
       "ts-jest": {
         "tsConfig": "tsconfig.json"

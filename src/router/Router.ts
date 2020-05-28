@@ -3,13 +3,15 @@ import { Request, Response } from '../network';
 import ResourceGraph from './ResourceGraph';
 import Path, { VARIABLE } from '../path';
 import { Middleware, MiddlewareExecutor } from '../middleware';
-import { Node, Handler } from './internal';
+import { Node, Handler, Validator } from './internal';
 
 type HandlerInfo = {
   remainingPath: string;
   handler: Handler;
   params?: { [key: string]: string };
 };
+
+type ValidatorArg = Validator | Validator[];
 
 export default class Router extends MiddlewareExecutor {
   graph: ResourceGraph<Node>;
@@ -28,28 +30,54 @@ export default class Router extends MiddlewareExecutor {
    * @param path The path for the resource location
    * @param handler The handler for requests to that location
    */
-  addHandler(path: string, handler: Handler): void {
+  addHandler(
+    path: string,
+    handler: Handler,
+    validators?: ValidatorArg
+  ): void {
     const resourcePath: Path = new Path(path);
     let state: number = 0;
+    let validatorIndex: number = 0;
+    let validatorArray: [Validator] | [] = [];
+    if (validators && !Array.isArray(validators)) {
+      // Only a single validator
+      validatorArray = [validators];
+    } else if (validators) {
+      validatorArray = <[Validator]>validators;
+    }
+    const getNode = (pathSegment: any, nextState: number) => {
+      const node =
+        nextState === 0
+          ? new Node(pathSegment, nextState, handler)
+          : new Node(pathSegment, nextState);
+      if (
+        pathSegment.isVariable() &&
+        validatorArray[validatorIndex]
+      ) {
+        node.addValidator(validatorArray[validatorIndex]);
+        validatorIndex += 1;
+      }
+      return node;
+    };
     for (const [index, pathSegment] of resourcePath.entries()) {
       const segmentString: string = pathSegment.toString();
       if (!this.graph.transitionExists(state, segmentString)) {
         // If no transition exists, create a new one
         if (resourcePath.isEnd(index)) {
           // If this is the end of the path, add the handler to the graph
-          const node = new Node(pathSegment, 0, handler);
+          const node = getNode(pathSegment, 0);
           this.graph.addTransition(state, segmentString, node);
           break;
         }
         // Otherwise, add a state transition for the next path segment
         const stateCount = this.graph.numStates();
-        const node = new Node(pathSegment, stateCount);
+        const node = getNode(pathSegment, stateCount);
         this.graph.addTransition(state, segmentString, node);
         state = stateCount;
       } else if (this.isHandler(state, segmentString)) {
         // If this is the end, overwrite the handler and return
         if (resourcePath.isEnd(index)) {
-          const node = new Node(pathSegment, 0, handler);
+          const node = getNode(pathSegment, 0);
           this.graph.addTransition(state, segmentString, node);
           break;
         }
@@ -59,7 +87,7 @@ export default class Router extends MiddlewareExecutor {
           segmentString
         );
         const stateCount = this.graph.numStates();
-        const node = new Node(pathSegment, stateCount);
+        const node = getNode(pathSegment, stateCount);
         this.graph.addTransition(state, segmentString, node);
         this.graph.addTransition(
           stateCount,
@@ -73,7 +101,7 @@ export default class Router extends MiddlewareExecutor {
           state,
           pathSegment.toString()
         );
-        const node = new Node(pathSegment, 0, handler);
+        const node = getNode(pathSegment, 0);
         this.graph.addTransition(
           nextState,
           resourcePath.getSeparator(),
@@ -103,6 +131,12 @@ export default class Router extends MiddlewareExecutor {
       if (!node) {
         node = this.graph.getTransition(state, VARIABLE);
         if (node) {
+          if (node.validator && !node.validator(pathChunk)) {
+            return {
+              remainingPath: '/',
+              handler: null
+            };
+          }
           params[node.variableName] = pathChunk;
           pathChunk = VARIABLE;
         } else {
@@ -149,6 +183,10 @@ export default class Router extends MiddlewareExecutor {
       remainingPath,
       params
     } = this.getAssociatedHandler(path);
+    if (!handler) {
+      response.badRequest();
+      return;
+    }
     request.updateParams(params);
     const next = async () => {
       if (handler instanceof Router) {
