@@ -61,7 +61,10 @@
     "testMatch": [
       "<rootDir>/lib/**/*.spec.js"
     ],
-    "coveragePathIgnorePatterns": ["index.js", "lib/__tests__"],
+    "coveragePathIgnorePatterns": [
+      "index.js",
+      "lib/__tests__"
+    ],
     "globals": {
       "ts-jest": {
         "tsConfig": "tsconfig.json"
