@@ -30,4 +30,10 @@ export default class Response extends ServerResponse {
     this.write('Not Found');
     this.end();
   }
+
+  badRequest() {
+    this.writeHead(400, { 'Content-Type': 'text/plain' });
+    this.write('Bad Request');
+    this.end();
+  }
 }

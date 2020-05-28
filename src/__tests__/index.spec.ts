@@ -117,6 +117,22 @@ describe('Integration', () => {
       expect(result.body).toEqual('world');
       done();
     });
+    it('sends 400 on bad request param validation', async (done) => {
+      const router: Router = new Router();
+      const validator = (param: string) => {
+        if (/^-{0,1}\d+$/.test(param)) {
+          return true;
+        }
+        return false;
+      };
+      router.addHandler('/foo/:hello', HelloEndpoint, validator);
+      server.setRouter(router);
+      const result = await got('http://localhost:3000/foo/world', {
+        throwHttpErrors: false
+      });
+      expect(result.statusCode).toEqual(400);
+      done();
+    });
     it('matches correct request type to correct Endpoint method', async (done) => {
       const router: Router = new Router();
       router.addHandler('/hello/world', WorldEndpoint);

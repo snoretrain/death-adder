@@ -4,12 +4,16 @@ import { Router } from './internal';
 
 export type Handler = Router | Endpoint | typeof Endpoint;
 
+export type Validator = (param: string) => boolean;
+
 export default class Node {
   nextState: number;
 
   variableName: string;
 
   handler: Handler;
+
+  validator: Validator;
 
   constructor(
     pathSegment?: PathSegment,
@@ -35,5 +39,9 @@ export default class Node {
       this.handler instanceof Endpoint ||
       typeof this.handler === 'function'
     );
+  }
+
+  addValidator(validator: Validator) {
+    this.validator = validator;
   }
 }
