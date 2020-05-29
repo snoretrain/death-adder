@@ -155,6 +155,25 @@ header to be set as well as be from `localhost`.
 
 In order to handle the separate HTTP methods, the `Endpoint` class
 has five separate functions representing the HTTP methods which can
-be overriden by child classes. These are `get()`, `post()`, `put()`,
-`delete()` and `patch()`. By default, any of these methods which are
-not overriden will return a `404 (Not Found)` error.
+be overriden by child classes. These are:
+```javascript
+get();
+post();
+put();
+delete();
+patch();
+```
+By default, any of these methods which are not overriden will
+return a `404 (Not Found)` error.
+
+Similarly, the `Response` class provides a number of built in methods
+for sending common response types to clients. These methods are:
+
+```javascript
+send(); // 200
+json(); // 200
+badRequest(); // 400
+unauthorized(); // 401
+notFound(); // 404
+error(); // 500
+```
