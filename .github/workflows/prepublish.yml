@@ -1,14 +1,12 @@
 # This is a basic workflow to help you get started with Actions
 # Base addition of github action, to only run when PR merged to develop
-name: CI
+name: Prepublish
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   pull_request:
     types:
-      - opened
-      - reopened
       - closed
     branches:
       - 'develop'
@@ -17,28 +15,35 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
+    if: github.event.pull_request.merged == true
+    env:
+      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
       with:
-        ref: 'develop'
-    # Runs a single command using the runners shell
-    - name: Run a multi-line script
-      run: |
-        echo "The github context is:"
-        echo "${{ toJson(github) }}"
-
+        node-version: '14'
     - name: Run on PR from feature
-      if: startsWith(github.head_ref, 'feature/') == true
+      if: 
       run: echo PR is from feature branch
 
-    # Runs a set of commands using the runners shell
-    - name: Show github context
-      if: github.event.pull_request.merged == true
+    # Update develop for minor prerelease
+    - name: Create minor prerelease
+      if: startsWith(github.head_ref, 'feature/') == true
       run: |
-        echo "The github context is:"
-        echo "${{ toJson(github) }}"
+        npm version preminor
+        git push --follow-tags
+        npm publish
+    
+    # Update develop for patch prerelease
+    - name: Create patch prerelease
+      if: startsWith(github.head_ref, 'patch/') == true
+      run: |
+        npm version prepatch
+        git push --follow-tags
+        npm publish
