@@ -140,7 +140,7 @@ describe('Integration', () => {
       let result = await got('http://localhost:3000/hello/world');
       expect(result.body).toEqual('get');
       result = await got.post('http://localhost:3000/hello/world');
-      expect(result.body).toEqual('post');
+      expect(result.body).toEqual('Created');
       result = await got.put('http://localhost:3000/hello/world');
       expect(result.body).toEqual('put');
       result = await got.delete('http://localhost:3000/hello/world');
