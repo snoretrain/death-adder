@@ -33,6 +33,7 @@ jobs:
     - name: Create minor prerelease
       if: startsWith(github.head_ref, 'feature/') == true
       run: |
+        npm install
         git config --global user.name 'David Sornberger'
         git config --global user.email 'snoretrain@users.noreply.github.com'
         npm version preminor
@@ -43,6 +44,7 @@ jobs:
     - name: Create patch prerelease
       if: startsWith(github.head_ref, 'patch/') == true
       run: |
+        npm install
         git config --global user.name 'David Sornberger'
         git config --global user.email 'snoretrain@users.noreply.github.com'
         npm version prepatch
