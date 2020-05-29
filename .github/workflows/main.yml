@@ -27,8 +27,10 @@ jobs:
       with:
         ref: 'develop'
     # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo $GITHUB_REF
+    - name: Run a multi-line script
+      run: |
+        echo "The github context is:"
+        echo "${{ toJson(github) }}"
 
     - name: Run on PR from feature
       if: startsWith(github.head_ref, 'feature/') == true
