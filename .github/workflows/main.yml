@@ -5,6 +5,10 @@ name: CI
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
+  push:
+    branches:
+      - 'develop'
+      - 'feature/*'
   pull_request:
     branches:
       - 'develop'
@@ -31,9 +35,8 @@ jobs:
       run: echo PR is from feature branch
 
     # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
+    - name: Show github context
       if: github.event.pull_request.merge == 'true'
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
-        echo $GITHUB_REF
+        echo "The github context is:"
+        echo "${{ toJson(github) }}"
