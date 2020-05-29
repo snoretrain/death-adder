@@ -34,9 +34,10 @@ jobs:
       if: startsWith(github.head_ref, 'feature/') == true
       run: |
         npm install
+        npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
         git config --global user.name 'David Sornberger'
         git config --global user.email 'snoretrain@users.noreply.github.com'
-        npm version preminor
+        npm version preminor --preid=beta
         git push --follow-tags
         npm publish
     
@@ -45,8 +46,9 @@ jobs:
       if: startsWith(github.head_ref, 'patch/') == true
       run: |
         npm install
+        npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
         git config --global user.name 'David Sornberger'
         git config --global user.email 'snoretrain@users.noreply.github.com'
-        npm version prepatch
+        npm version prepatch --preid=beta
         git push --follow-tags
         npm publish
