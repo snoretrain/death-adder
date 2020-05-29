@@ -10,6 +10,10 @@ on:
       - 'develop'
       - 'feature/*'
   pull_request:
+    types:
+      - opened
+      - reopened
+      - closed
     branches:
       - 'develop'
 
