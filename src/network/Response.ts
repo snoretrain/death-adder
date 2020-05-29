@@ -1,11 +1,6 @@
 import { ServerResponse } from 'http';
 
 export default class Response extends ServerResponse {
-  unauthorized() {
-    this.writeHead(401);
-    this.write('Not Authorized');
-    this.end();
-  }
 
   send(text: string) {
     this.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -19,9 +14,21 @@ export default class Response extends ServerResponse {
     this.end();
   }
 
-  error() {
-    this.writeHead(500, { 'Content-Type': 'text/plain' });
-    this.write('Internal Server Error');
+  created() {
+    this.writeHead(201, { 'Content-Type': 'text/plain' });
+    this.write('Created');
+    this.end();
+  }
+
+  badRequest() {
+    this.writeHead(400, { 'Content-Type': 'text/plain' });
+    this.write('Bad Request');
+    this.end();
+  }
+
+  unauthorized() {
+    this.writeHead(401);
+    this.write('Not Authorized');
     this.end();
   }
 
@@ -31,9 +38,9 @@ export default class Response extends ServerResponse {
     this.end();
   }
 
-  badRequest() {
-    this.writeHead(400, { 'Content-Type': 'text/plain' });
-    this.write('Bad Request');
+  error() {
+    this.writeHead(500, { 'Content-Type': 'text/plain' });
+    this.write('Internal Server Error');
     this.end();
   }
 }

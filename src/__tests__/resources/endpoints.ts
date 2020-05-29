@@ -31,7 +31,7 @@ export class WorldEndpoint extends Endpoint {
   }
 
   post(request: Request, response: Response) {
-    response.send('post');
+    response.created();
   }
 
   put(request: Request, response: Response) {

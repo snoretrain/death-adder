@@ -1,6 +1,6 @@
 {
   "name": "death-adder",
-  "version": "0.0.4",
+  "version": "0.3.1-beta.0",
   "description": "A resource routing library for node.js",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -8,7 +8,7 @@
     "lib"
   ],
   "scripts": {
-    "prepublish": "npm run test && npm run clean && npm run build",
+    "prepublishOnly": "npm run test && npm run clean && npm run build",
     "prepack": "rm -rf lib/__tests__",
     "build": "tsc",
     "buildTest": "tsc --p tsconfig.test.json",
