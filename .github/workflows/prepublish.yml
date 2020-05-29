@@ -28,9 +28,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: '14'
-    - name: Run on PR from feature
-      if: 
-      run: echo PR is from feature branch
 
     # Update develop for minor prerelease
     - name: Create minor prerelease
