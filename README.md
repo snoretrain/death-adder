@@ -152,3 +152,9 @@ resolve without any additional requirements, while requests to
 header to be set. Furthermore, requests to
 `http://localhost:3000/api/third` will require the `Authorization`
 header to be set as well as be from `localhost`.
+
+In order to handle the separate HTTP methods, the `Endpoint` class
+has five separate functions representing the HTTP methods which can
+be overriden by child classes. These are `get()`, `post()`, `put()`,
+`delete()` and `patch()`. By default, any of these methods which are
+not overriden will return a `404 (Not Found)` error.
