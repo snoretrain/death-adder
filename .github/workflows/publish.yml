@@ -29,6 +29,13 @@ jobs:
     - name: Create full release for prerelease
       run: |
         npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
+        git pull origin develop
+        git pull origin master
+        git checkout master
         npm version patch
         git push --follow-tags
+        git pull origin master
+        git checkout develop
+        git merge --no-ff master
+        git push origin develop
         npm publish
