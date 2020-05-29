@@ -35,8 +35,8 @@ jobs:
         git config --global user.email 'snoretrain@users.noreply.github.com'
         npm version patch
         git push --follow-tags
+        npm publish
         git pull origin master
         git checkout develop
         git merge --no-ff master
         git push origin develop
-        npm publish
