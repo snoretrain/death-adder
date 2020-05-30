@@ -1,7 +1,6 @@
 import { ServerResponse } from 'http';
 
 export default class Response extends ServerResponse {
-
   send(text: string) {
     this.writeHead(200, { 'Content-Type': 'text/plain' });
     this.write(text);
