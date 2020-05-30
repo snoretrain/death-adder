@@ -23,6 +23,31 @@ describe('Integration', () => {
     server.listen(3000);
   });
   describe('Router', () => {
+    it('maps to the null or slash path', async (done) => {
+      const router: Router = new Router();
+      router.addHandler('/', CatEndpoint);
+      server.setRouter(router);
+
+      let result = await got('http://localhost:3000/');
+      expect(result.statusCode).toEqual(200);
+      expect(result.body).toEqual('Cat');
+      result = await got('http://localhost:3000');
+      expect(result.statusCode).toEqual(200);
+      expect(result.body).toEqual('Cat');
+
+      const routerWithNull: Router = new Router();
+      routerWithNull.addHandler('', CatEndpoint);
+      server.setRouter(routerWithNull);
+
+      result = await got('http://localhost:3000/');
+      expect(result.statusCode).toEqual(200);
+      expect(result.body).toEqual('Cat');
+      result = await got('http://localhost:3000');
+      expect(result.statusCode).toEqual(200);
+      expect(result.body).toEqual('Cat');
+
+      done();
+    });
     it('maps within one router at single level', async (done) => {
       const router: Router = new Router();
       router.addHandler('/dog', DogEndpoint);

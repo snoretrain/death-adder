@@ -15,7 +15,7 @@ export default class Path {
   }
 
   getCorrectPathString(path: string): string {
-    if (path === '') {
+    if (path === '' || path === '/') {
       return '/';
     }
     let correctedPath: string;
