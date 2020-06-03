@@ -1,5 +1,5 @@
 import got from 'got';
-import Server from '../network/Server';
+import { Server, Request, Response } from '../network';
 import Router from '../router';
 import { TestRouter, ErrorRouter } from './resources/routers';
 
@@ -36,6 +36,36 @@ describe('Server', () => {
       const response = await got('http://localhost:3005/', options);
       expect(spy).toHaveBeenCalled();
       expect(response.statusCode).toEqual(500);
+      done();
+    });
+    it('attaches the body of incoming messages', async (done) => {
+      const router: Router = new TestRouter();
+      const body = { hello: 'world' };
+      router.handleRequest = jest
+        .fn()
+        .mockImplementation(
+          async (request: Request, response: Response) => {
+            if (
+              request.headers['content-type'] === 'application/json'
+            ) {
+              expect(request.json).toEqual(body);
+            } else {
+              expect(request.body).toEqual(JSON.stringify(body));
+            }
+            response.send('OK');
+          }
+        );
+      server.setRouter(router);
+      await got.post('http://localhost:3005/', {
+        headers: {
+          'content-type': 'application/json'
+        },
+        json: body
+      });
+
+      await got.post('http://localhost:3005/', {
+        body: JSON.stringify(body)
+      });
       done();
     });
     afterAll(() => {
