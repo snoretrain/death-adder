@@ -1,6 +1,6 @@
 {
   "name": "death-adder",
-  "version": "0.4.0-beta.0",
+  "version": "0.4.0",
   "description": "A resource routing library for node.js",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
