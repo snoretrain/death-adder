@@ -31,6 +31,12 @@ export default class Response extends ServerResponse {
     this.end();
   }
 
+  forbidden() {
+    this.writeHead(403);
+    this.write('Forbidden');
+    this.end();
+  }
+
   notFound() {
     this.writeHead(404, { 'Content-Type': 'text/plain' });
     this.write('Not Found');

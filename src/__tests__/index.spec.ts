@@ -14,7 +14,8 @@ import {
   HelloEndpoint,
   WorldEndpoint,
   ErrorEndpoint,
-  JSONEndpoint
+  JSONEndpoint,
+  ForbiddenEndpoint
 } from './resources/endpoints';
 
 describe('Integration', () => {
@@ -262,6 +263,17 @@ describe('Integration', () => {
         'application/json'
       );
       expect(JSON.parse(result.body).hello).toEqual('world');
+      done();
+    });
+    it('gives forbidden when endpoint sends forbidden', async (done) => {
+      const router: Router = new Router();
+      router.addHandler('/', ForbiddenEndpoint);
+      server.setRouter(router);
+      const result = await got('http://localhost:3000/', {
+        throwHttpErrors: false,
+        retry: 0
+      });
+      expect(result.statusCode).toEqual(403);
       done();
     });
   });
