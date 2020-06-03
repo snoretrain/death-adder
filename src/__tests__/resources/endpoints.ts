@@ -56,3 +56,9 @@ export class JSONEndpoint extends Endpoint {
     response.json({ hello: 'world' });
   }
 }
+
+export class ForbiddenEndpoint extends Endpoint {
+  get(request: Request, response: Response) {
+    response.forbidden();
+  }
+}

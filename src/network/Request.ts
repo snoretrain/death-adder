@@ -6,6 +6,10 @@ export default class Request extends IncomingMessage {
 
   params: { [key: string]: string };
 
+  body?: any;
+
+  json?: { [key: string]: any };
+
   constructor(socket: any) {
     super(socket);
     this.params = {};
