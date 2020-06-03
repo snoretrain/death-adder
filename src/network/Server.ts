@@ -16,13 +16,26 @@ export default class Server {
     this.port = port || 3000;
   }
 
-  async requestDispatcher(request: Request, response: Response) {
+  requestDispatcher(request: Request, response: Response) {
     request.initRemainingPath();
-    try {
-      await this.router.handleRequest(request, response);
-    } catch (e) {
-      response.error();
-    }
+    let data = '';
+    request.on('data', (chunk) => {
+      data += chunk.toString();
+    });
+    request.on('end', async () => {
+      if (data) {
+        if (request.headers['content-type'] === 'application/json') {
+          request.json = JSON.parse(data);
+        } else {
+          request.body = data;
+        }
+      }
+      try {
+        await this.router.handleRequest(request, response);
+      } catch (e) {
+        response.error();
+      }
+    });
   }
 
   setRouter(router: Router) {

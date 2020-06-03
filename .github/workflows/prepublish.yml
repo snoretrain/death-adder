@@ -39,7 +39,7 @@ jobs:
         git config --global user.email 'snoretrain@users.noreply.github.com'
         npm version preminor --preid=beta
         git push --follow-tags
-        npm publish
+        npm publish --tag beta
     
     # Update develop for patch prerelease
     - name: Create patch prerelease
@@ -51,4 +51,4 @@ jobs:
         git config --global user.email 'snoretrain@users.noreply.github.com'
         npm version prepatch --preid=beta
         git push --follow-tags
-        npm publish
+        npm publish --tag beta
