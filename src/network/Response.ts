@@ -1,8 +1,8 @@
 import { ServerResponse } from 'http';
 
 export default class Response extends ServerResponse {
-  send(text: string) {
-    this.writeHead(200, { 'Content-Type': 'text/plain' });
+  send(text: string, contentType: string = 'text/plain') {
+    this.writeHead(200, { 'Content-Type': contentType });
     this.write(text);
     this.end();
   }
@@ -46,6 +46,12 @@ export default class Response extends ServerResponse {
   error() {
     this.writeHead(500, { 'Content-Type': 'text/plain' });
     this.write('Internal Server Error');
+    this.end();
+  }
+
+  wrongMethod() {
+    this.writeHead(405, { 'Content-Type': 'text/plain' });
+    this.write('Method Not Allowed');
     this.end();
   }
 }

@@ -4,6 +4,7 @@ import ResourceGraph from './ResourceGraph';
 import Path, { VARIABLE } from '../path';
 import { Middleware, MiddlewareExecutor } from '../middleware';
 import { Node, Handler, Validator } from './internal';
+import { StaticResource } from '../index';
 
 type HandlerInfo = {
   remainingPath: string;
@@ -140,8 +141,10 @@ export default class Router extends MiddlewareExecutor {
           params[node.variableName] = pathChunk;
           pathChunk = VARIABLE;
         } else {
-          if (this.isRouter(state, '/')) {
+          if (this.isNonEndpointHandler(state, '/')) {
             node = this.graph.getTransition(state, '/');
+          } else if (this.isNonEndpointHandler(state, '')) {
+            node = this.graph.getTransition(state, '');
           }
           return {
             remainingPath: resourcePath.getPathPortion(
@@ -153,7 +156,7 @@ export default class Router extends MiddlewareExecutor {
           };
         }
       }
-      if (node.isRouter()) {
+      if (node.isNonEndpointHandler()) {
         return {
           remainingPath: resourcePath.getPathPortion(
             index + 1,
@@ -189,7 +192,7 @@ export default class Router extends MiddlewareExecutor {
     }
     request.updateParams(params);
     const next = async () => {
-      if (handler instanceof Router) {
+      if (handler instanceof Router || handler instanceof StaticResource) {
         request.setRemainingPath(remainingPath);
         await handler.handleRequest(request, response);
       } else {
@@ -234,16 +237,17 @@ export default class Router extends MiddlewareExecutor {
     return (
       handler instanceof Router ||
       handler instanceof Endpoint ||
-      typeof handler === 'function'
+      typeof handler === 'function' ||
+      handler instanceof StaticResource
     );
   }
 
-  isRouter(state: number, key: string): boolean {
+  isNonEndpointHandler(state: number, key: string): boolean {
     const node: Node = this.graph.getTransition(state, key);
     if (!node) {
       return false;
     }
     const { handler } = node;
-    return handler instanceof Router;
+    return handler instanceof Router || handler instanceof StaticResource;
   }
 }

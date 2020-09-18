@@ -1,8 +1,9 @@
 import Endpoint from '../Endpoint';
 import { PathSegment } from '../path';
 import { Router } from './internal';
+import { StaticResource } from '../index';
 
-export type Handler = Router | Endpoint | typeof Endpoint;
+export type Handler = Router | Endpoint | typeof Endpoint | StaticResource;
 
 export type Validator = (param: string) => boolean;
 
@@ -27,8 +28,11 @@ export default class Node {
     this.nextState = handler ? 0 : nextState;
   }
 
-  isRouter(): boolean {
-    return this.handler instanceof Router;
+  isNonEndpointHandler(): boolean {
+    return (
+      this.handler instanceof Router ||
+      this.handler instanceof StaticResource
+    );
   }
 
   isEndpoint(): boolean {

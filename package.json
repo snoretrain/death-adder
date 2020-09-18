@@ -37,6 +37,7 @@
   "homepage": "https://github.com/snoretrain/death-adder#readme",
   "devDependencies": {
     "@types/jest": "^25.2.2",
+    "@types/mime-types": "^2.1.0",
     "@types/node": "^14.0.1",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
@@ -71,5 +72,7 @@
       }
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "mime-types": "^2.1.27"
+  }
 }

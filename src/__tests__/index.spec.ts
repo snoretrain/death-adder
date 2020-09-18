@@ -1,10 +1,12 @@
 import got from 'got';
+import fs from 'fs';
 import {
   Server,
   Request,
   Response,
   Endpoint,
-  Router
+  Router,
+  StaticResource
 } from '../index';
 import {
   CatEndpoint,
@@ -27,6 +29,7 @@ describe('Integration', () => {
     it('maps to the null or slash path', async (done) => {
       const router: Router = new Router();
       router.addHandler('/', CatEndpoint);
+      router.addHandler('/dog', DogEndpoint);
       server.setRouter(router);
 
       let result = await got('http://localhost:3000/');
@@ -46,6 +49,14 @@ describe('Integration', () => {
       result = await got('http://localhost:3000');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Cat');
+
+      const routerWithNestedRouter: Router = new Router();
+      routerWithNestedRouter.addHandler('/', router);
+      server.setRouter(routerWithNestedRouter);
+
+      result = await got('http://localhost:3000/dog');
+      expect(result.statusCode).toEqual(200);
+      expect(result.body).toEqual('Dog');
 
       done();
     });
@@ -344,6 +355,35 @@ describe('Integration', () => {
       server.terminate();
       server.setPort(3000);
       server.listen();
+    });
+  });
+  describe('Static', () => {
+    const fileText = 'Something';
+    beforeAll((done) => {
+      fs.writeFile('./file.txt', fileText, () => {
+        done();
+      });
+    });
+    it('sends a static file', async (done) => {
+      const router: Router = new Router();
+      router.addHandler('/', new StaticResource('./'));
+      router.addHandler('/cat', CatEndpoint);
+      server.setRouter(router);
+      let result = await got('http://localhost:3000/file.txt');
+      expect(result.statusCode).toEqual(200);
+      expect(result.body).toEqual(fileText);
+
+      result = await got.post(
+        'http://localhost:3000/file.txt',
+        { throwHttpErrors: false, retry: 0 }
+      );
+      expect(result.statusCode).toEqual(405);
+      done();
+    });
+    afterAll((done) => {
+      fs.unlink('./file.txt', () => {
+        done();
+      });
     });
   });
   afterAll(() => {
