@@ -22,6 +22,14 @@ export default class MiddlewareExecutor {
     await next();
   }
 
+  async iterateMiddlewareExecution(
+    request: Request,
+    response: Response,
+    next: Function,
+    middlewares: Middleware[]
+  ) {
+  }
+
   addMiddleware(middleware: Middleware) {
     this.middlewareArray.push(middleware);
   }
