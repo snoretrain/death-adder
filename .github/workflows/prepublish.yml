@@ -43,7 +43,7 @@ jobs:
     
     # Update develop for patch prerelease
     - name: Create patch prerelease
-      if: startsWith(github.head_ref, 'patch/') == true
+      if: startsWith(github.head_ref, 'patch/') == true || startsWith(github.head_ref, 'dependabot/') == true
       run: |
         npm install
         npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
