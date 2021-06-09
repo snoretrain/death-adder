@@ -13,13 +13,7 @@ export default class MiddlewareExecutor {
     response: Response,
     next: Function
   ) {
-    for (const middleware of this.middlewareArray) {
-      const success = await middleware(request, response);
-      if (!success) {
-        return;
-      }
-    }
-    await next();
+    
   }
 
   async iterateMiddlewareExecution(
@@ -28,6 +22,18 @@ export default class MiddlewareExecutor {
     next: Function,
     middlewares: Middleware[]
   ) {
+    if (middlewares.length < 1) {
+      await next();
+    }
+    const call = middlewares[0](request, response, () => {
+
+    })
+    if (call instanceof Promise) {
+      const status: Boolean = await call;
+      if (status) {
+        this.iterateMiddlewareExecution(request, response, () => {}, middlewares.slice(1));
+      }
+    }
   }
 
   addMiddleware(middleware: Middleware) {

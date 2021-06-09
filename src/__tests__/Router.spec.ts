@@ -44,7 +44,7 @@ describe('Router', () => {
     router.getAssociatedHandler('/hello/thing');
     expect(validator).toHaveBeenCalled();
   });
-  it('returns a 404 error when validator fails', async (done) => {
+  it('returns a 404 error when validator fails', async () => {
     const router: Router = new Router();
     const validator = jest.fn(() => {
       return false;
@@ -60,7 +60,6 @@ describe('Router', () => {
       res
     );
     expect(spyResponse).toHaveBeenCalled();
-    done();
   });
   it('takes multiple validator functions', () => {
     const router: Router = new Router();

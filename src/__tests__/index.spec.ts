@@ -24,7 +24,7 @@ describe('Integration', () => {
     server.listen(3000);
   });
   describe('Router', () => {
-    it('maps to the null or slash path', async (done) => {
+    it('maps to the null or slash path', async () => {
       const router: Router = new Router();
       router.addHandler('/', CatEndpoint);
       server.setRouter(router);
@@ -46,10 +46,8 @@ describe('Integration', () => {
       result = await got('http://localhost:3000');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Cat');
-
-      done();
     });
-    it('maps within one router at single level', async (done) => {
+    it('maps within one router at single level', async () => {
       const router: Router = new Router();
       router.addHandler('/dog', DogEndpoint);
       router.addHandler('/cat', CatEndpoint);
@@ -61,9 +59,8 @@ describe('Integration', () => {
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Dog');
       server.setRouter(router);
-      done();
     });
-    it('distributes to nested routers', async (done) => {
+    it('distributes to nested routers', async () => {
       const router: Router = new Router();
       const nestedRouter: Router = new Router();
       nestedRouter.addHandler('/cat', CatEndpoint);
@@ -77,9 +74,8 @@ describe('Integration', () => {
       result = await got('http://localhost:3000/nested/dog');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Dog');
-      done();
     });
-    it('allows additional router to match lower specificity', async (done) => {
+    it('allows additional router to match lower specificity', async () => {
       const router: Router = new Router();
       const nestedRouter: Router = new Router();
       nestedRouter.addHandler('/dog', DogEndpoint);
@@ -97,9 +93,8 @@ describe('Integration', () => {
       result = await got('http://localhost:3000/foo/bar');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Bar');
-      done();
     });
-    it('returns 404 on non existent endpoint', async (done) => {
+    it('returns 404 on non existent endpoint', async () => {
       const router: Router = new Router();
       router.addHandler('/cat', CatEndpoint);
       router.addHandler('/dog', DogEndpoint);
@@ -108,9 +103,8 @@ describe('Integration', () => {
         throwHttpErrors: false
       });
       expect(result.statusCode).toEqual(404);
-      done();
     });
-    it('matches most specific path', async (done) => {
+    it('matches most specific path', async () => {
       const router: Router = new Router();
       router.addHandler('/foo', FooEndpoint);
       router.addHandler('/foo/bar', BarEndpoint);
@@ -118,9 +112,8 @@ describe('Integration', () => {
       const result = await got('http://localhost:3000/foo/bar');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Bar');
-      done();
     });
-    it('matches path with variables and adds parameters', async (done) => {
+    it('matches path with variables and adds parameters', async () => {
       const router: Router = new Router();
       router.addHandler('/foo/:hello', HelloEndpoint);
       router.addHandler('/foo/bar/:hello/extra/stuff', HelloEndpoint);
@@ -141,9 +134,8 @@ describe('Integration', () => {
       result = await got('http://localhost:3000/foo/stuff/world');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('world');
-      done();
     });
-    it('sends 400 on bad request param validation', async (done) => {
+    it('sends 400 on bad request param validation', async () => {
       const router: Router = new Router();
       const validator = (param: string) => {
         if (/^-{0,1}\d+$/.test(param)) {
@@ -157,9 +149,8 @@ describe('Integration', () => {
         throwHttpErrors: false
       });
       expect(result.statusCode).toEqual(400);
-      done();
     });
-    it('matches correct request type to correct Endpoint method', async (done) => {
+    it('matches correct request type to correct Endpoint method', async () => {
       const router: Router = new Router();
       router.addHandler('/hello/world', WorldEndpoint);
       server.setRouter(router);
@@ -173,9 +164,8 @@ describe('Integration', () => {
       expect(result.body).toEqual('delete');
       result = await got.patch('http://localhost:3000/hello/world');
       expect(result.body).toEqual('patch');
-      done();
     });
-    it('takes instance of Endpoint or Endpoint class definition', async (done) => {
+    it('takes instance of Endpoint or Endpoint class definition', async () => {
       const router: Router = new Router();
       router.addHandler('/cat', CatEndpoint);
       const dog: DogEndpoint = new DogEndpoint();
@@ -187,9 +177,8 @@ describe('Integration', () => {
       result = await got('http://localhost:3000/dog');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Dog');
-      done();
     });
-    it('adds a less specific path if more specific one exists', async (done) => {
+    it('adds a less specific path if more specific one exists', async () => {
       const router: Router = new Router();
       router.addHandler('/foo/bar', BarEndpoint);
       router.addHandler('/foo', FooEndpoint);
@@ -203,29 +192,26 @@ describe('Integration', () => {
         throwHttpErrors: false
       });
       expect(result.statusCode).toEqual(404);
-      done();
     });
-    it('allows paths to include trailing slash or no prefix slash', async (done) => {
+    it('allows paths to include trailing slash or no prefix slash', async () => {
       const router: Router = new Router();
       router.addHandler('some/dog/', DogEndpoint);
       server.setRouter(router);
       const result = await got('http://localhost:3000/some/dog');
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('Dog');
-      done();
     });
-    it('overwrites previous endpoint on same path', async (done) => {
+    it('overwrites previous endpoint on same path', async () => {
       const router: Router = new Router();
       router.addHandler('/check', CatEndpoint);
       router.addHandler('/check', DogEndpoint);
       server.setRouter(router);
       const result = await got('http://localhost:3000/check');
       expect(result.body).toEqual('Dog');
-      done();
     });
   });
   describe('Endpoint', () => {
-    it('base Endpoint class returns 404 status codes', async (done) => {
+    it('base Endpoint class returns 404 status codes', async () => {
       const router: Router = new Router();
       router.addHandler('/hello', Endpoint);
       server.setRouter(router);
@@ -241,9 +227,8 @@ describe('Integration', () => {
       expect(result.statusCode).toEqual(404);
       result = await got.patch(url, noThrow);
       expect(result.statusCode).toEqual(404);
-      done();
     });
-    it('returns 500 when endpoint throws error', async (done) => {
+    it('returns 500 when endpoint throws error', async () => {
       const router: Router = new Router();
       router.addHandler('/error', ErrorEndpoint);
       server.setRouter(router);
@@ -252,9 +237,8 @@ describe('Integration', () => {
         retry: 0
       });
       expect(result.statusCode).toEqual(500);
-      done();
     });
-    it('gives JSON with correct header when using json', async (done) => {
+    it('gives JSON with correct header when using json', async () => {
       const router: Router = new Router();
       router.addHandler('/json', JSONEndpoint);
       server.setRouter(router);
@@ -263,9 +247,8 @@ describe('Integration', () => {
         'application/json'
       );
       expect(JSON.parse(result.body).hello).toEqual('world');
-      done();
     });
-    it('gives forbidden when endpoint sends forbidden', async (done) => {
+    it('gives forbidden when endpoint sends forbidden', async () => {
       const router: Router = new Router();
       router.addHandler('/', ForbiddenEndpoint);
       server.setRouter(router);
@@ -274,11 +257,10 @@ describe('Integration', () => {
         retry: 0
       });
       expect(result.statusCode).toEqual(403);
-      done();
     });
   });
   describe('Middleware', () => {
-    it('breaks or continues execution on value of middleware', async (done) => {
+    it('breaks or continues execution on value of middleware', async () => {
       const router: Router = new Router();
       const hello: HelloEndpoint = new HelloEndpoint();
       hello.addMiddleware((request: Request, response: Response) => {
@@ -312,9 +294,8 @@ describe('Integration', () => {
       );
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('tester');
-      done();
     });
-    it('returns 500 when error thrown from middleware', async (done) => {
+    it('returns 500 when error thrown from middleware', async () => {
       const router: Router = new Router();
       router.addHandler('/any', BarEndpoint);
       router.addMiddleware(() => {
@@ -326,11 +307,10 @@ describe('Integration', () => {
         retry: 0
       });
       expect(result.statusCode).toEqual(500);
-      done();
     });
   });
   describe('Server', () => {
-    it('can be started with a different port', async (done) => {
+    it('can be started with a different port', async () => {
       const router: Router = new Router();
       router.addHandler('/dog', DogEndpoint);
       server.terminate();
@@ -338,7 +318,6 @@ describe('Integration', () => {
       server.setRouter(router);
       const result = await got('http://localhost:4000/dog');
       expect(result.statusCode).toEqual(200);
-      done();
     });
     afterEach(() => {
       server.terminate();

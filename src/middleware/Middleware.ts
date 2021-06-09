@@ -6,7 +6,8 @@ type AsyncMiddleware = (
 ) => Promise<boolean>;
 type SyncMiddleware = (
   request: Request,
-  response: Response
+  response: Response,
+  callback: () => void
 ) => boolean;
 
 export type Middleware = AsyncMiddleware | SyncMiddleware;

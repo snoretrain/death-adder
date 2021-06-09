@@ -20,15 +20,14 @@ describe('Server', () => {
       server = new Server();
       server.listen(3005);
     });
-    it('calls handle request of router from requestDispatcher', async (done) => {
+    it('calls handle request of router from requestDispatcher', async () => {
       const router: TestRouter = new TestRouter();
       const spy = jest.spyOn(router, 'handleRequest');
       server.setRouter(router);
       await got('http://localhost:3005/');
       expect(spy).toHaveBeenCalled();
-      done();
     });
-    it('returns 500 when handleRequest throws', async (done) => {
+    it('returns 500 when handleRequest throws', async () => {
       const router: ErrorRouter = new ErrorRouter();
       const spy = jest.spyOn(router, 'handleRequest');
       server.setRouter(router);
@@ -36,9 +35,8 @@ describe('Server', () => {
       const response = await got('http://localhost:3005/', options);
       expect(spy).toHaveBeenCalled();
       expect(response.statusCode).toEqual(500);
-      done();
     });
-    it('attaches the body of incoming messages', async (done) => {
+    it('attaches the body of incoming messages', async () => {
       const router: Router = new TestRouter();
       const body = { hello: 'world' };
       router.handleRequest = jest
@@ -66,7 +64,6 @@ describe('Server', () => {
       await got.post('http://localhost:3005/', {
         body: JSON.stringify(body)
       });
-      done();
     });
     afterAll(() => {
       server.terminate();
