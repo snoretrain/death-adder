@@ -38,7 +38,7 @@ module.exports = {
   },
   overrides: [
     {
-      'files': ['src/__tests__/resources/*.ts'],
+      'files': ['src/__tests__/resources/*.ts', 'src/__tests__/index.spec.ts'],
       'rules': {
         'max-classes-per-file': 'off',
         '@typescript-eslint/no-unused-vars': 'off'
