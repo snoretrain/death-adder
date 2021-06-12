@@ -8,14 +8,14 @@ type AsyncMiddleware = (
 type SyncMiddleware = (
   request: Request,
   response: Response
-) => Boolean;
+) => boolean;
 
 export type BooleanMiddleware = AsyncMiddleware | SyncMiddleware;
 
 export type CallbackMiddleware = (
   request: Request,
   response: Response,
-  callback: (val: Boolean) => void
+  callback: (val: boolean) => void
 ) => void;
 
 export type Middleware = BooleanMiddleware | CallbackMiddleware;
