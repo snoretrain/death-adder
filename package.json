@@ -16,7 +16,7 @@
     "clean": "rm -rf coverage/* lib/*",
     "lint": "eslint 'src/**/*.ts'",
     "fix": "eslint 'src/**/*.ts' --fix",
-    "format": "prettier --write src/*.ts"
+    "format": "prettier --write src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -70,6 +70,5 @@
         "tsConfig": "tsconfig.json"
       }
     }
-  },
-  "dependencies": {}
+  }
 }

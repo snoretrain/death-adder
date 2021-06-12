@@ -151,7 +151,26 @@ resolve without any additional requirements, while requests to
 `http://localhost:3000/api/second` will require the `Authorization`
 header to be set. Furthermore, requests to
 `http://localhost:3000/api/third` will require the `Authorization`
-header to be set as well as be from `localhost`.
+header to be set as well as be from `localhost`. Middleware functions
+can return a boolean, return a Promise which resolves to a boolean,
+or expect a callback function to provide a boolean to. The following
+are all valid examples of Death Adder middlewares:
+
+```javascript
+const syncMiddleware = (request, response) => {
+  return true;
+}
+
+const promiseMiddleware = (request, response) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 1000);
+  });
+}
+
+const callbackMiddleware = (request, response, callback) => {
+  setTimeout(() => callback(true), 1000);
+}
+```
 
 In order to handle the separate HTTP methods, the `Endpoint` class
 has five separate functions representing the HTTP methods which can

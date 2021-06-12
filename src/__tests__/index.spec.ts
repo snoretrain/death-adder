@@ -295,6 +295,45 @@ describe('Integration', () => {
       expect(result.statusCode).toEqual(200);
       expect(result.body).toEqual('tester');
     });
+    it('uses callback middleware and boolean middlewre', async () => {
+      const router: Router = new Router();
+      router.addHandler('/any', BarEndpoint);
+      const booleanMiddleware = jest.fn(
+        (request: Request, response: Response) => {
+          return true;
+        }
+      );
+      router.addMiddleware(booleanMiddleware);
+      const callbackMiddleware = jest.fn(
+        (request: Request, response: Response, cb: Function) => {
+          setTimeout(() => cb(true), 500);
+        }
+      );
+      router.addMiddleware(callbackMiddleware);
+      const failedCallbackMiddleware = jest.fn(
+        (request: Request, response: Response, cb: Function) => {
+          response.error();
+          cb(false);
+        }
+      );
+      router.addMiddleware(failedCallbackMiddleware);
+      const unReachableMiddleware = jest.fn(
+        (request: Request, response: Response, cb: Function) => {
+          response.send('Shhhhh');
+        }
+      );
+      router.addMiddleware(unReachableMiddleware);
+      server.setRouter(router);
+      const result = await got('http://localhost:3000/any', {
+        throwHttpErrors: false,
+        retry: 0
+      });
+      expect(result.statusCode).toBe(500);
+      expect(booleanMiddleware).toHaveBeenCalledTimes(1);
+      expect(callbackMiddleware).toHaveBeenCalledTimes(1);
+      expect(failedCallbackMiddleware).toHaveBeenCalledTimes(1);
+      expect(unReachableMiddleware).not.toHaveBeenCalled();
+    });
     it('returns 500 when error thrown from middleware', async () => {
       const router: Router = new Router();
       router.addHandler('/any', BarEndpoint);

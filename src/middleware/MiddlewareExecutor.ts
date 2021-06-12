@@ -1,5 +1,5 @@
 import { Request, Response } from '../network';
-import { Middleware } from './Middleware';
+import { BooleanMiddleware, Middleware } from './Middleware';
 
 export default class MiddlewareExecutor {
   middlewareArray: Middleware[];
@@ -11,29 +11,54 @@ export default class MiddlewareExecutor {
   async executeMiddleware(
     request: Request,
     response: Response,
-    next: Function
-  ) {
-    
+    next: Function,
+    middlewares: Middleware[] = this.middlewareArray
+  ): Promise<void> {
+    if (middlewares.length < 1) {
+      return next();
+    }
+    if (middlewares[0].length === 3) {
+      return this.executeCallbackMiddleware(
+        request,
+        response,
+        next,
+        middlewares
+      );
+    }
+    const success = await (<BooleanMiddleware>middlewares[0])(
+      request,
+      response
+    );
+    if (!success) {
+      return Promise.resolve();
+    }
+    return this.executeMiddleware(
+      request,
+      response,
+      next,
+      middlewares.slice(1)
+    );
   }
 
-  async iterateMiddlewareExecution(
+  async executeCallbackMiddleware(
     request: Request,
     response: Response,
     next: Function,
     middlewares: Middleware[]
-  ) {
-    if (middlewares.length < 1) {
-      await next();
-    }
-    const call = middlewares[0](request, response, () => {
-
-    })
-    if (call instanceof Promise) {
-      const status: Boolean = await call;
-      if (status) {
-        this.iterateMiddlewareExecution(request, response, () => {}, middlewares.slice(1));
-      }
-    }
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      middlewares[0](request, response, async (success) => {
+        if (success) {
+          await this.executeMiddleware(
+            request,
+            response,
+            next,
+            middlewares.slice(1)
+          );
+        }
+        resolve();
+      });
+    });
   }
 
   addMiddleware(middleware: Middleware) {
