@@ -33,7 +33,7 @@ jobs:
     - name: Create minor prerelease
       if: startsWith(github.head_ref, 'feature/') == true
       run: |
-        npm install
+        npm ci
         npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
         git config --global user.name 'David Sornberger'
         git config --global user.email 'snoretrain@users.noreply.github.com'
@@ -45,7 +45,7 @@ jobs:
     - name: Create patch prerelease
       if: startsWith(github.head_ref, 'patch/') == true || startsWith(github.head_ref, 'dependabot/') == true
       run: |
-        npm install
+        npm ci
         npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
         git config --global user.name 'David Sornberger'
         git config --global user.email 'snoretrain@users.noreply.github.com'
