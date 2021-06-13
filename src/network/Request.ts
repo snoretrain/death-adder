@@ -10,7 +10,7 @@ export default class Request extends IncomingMessage {
 
   json?: { [key: string]: any };
 
-  attachments?: Object;
+  attachments?: { [key: string]: any };
 
   constructor(socket: any) {
     super(socket);
