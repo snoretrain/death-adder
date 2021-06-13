@@ -1,6 +1,6 @@
 {
   "name": "death-adder",
-  "version": "0.4.3",
+  "version": "0.5.1-beta.0",
   "description": "A resource routing library for node.js",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -16,7 +16,7 @@
     "clean": "rm -rf coverage/* lib/*",
     "lint": "eslint 'src/**/*.ts'",
     "fix": "eslint 'src/**/*.ts' --fix",
-    "format": "prettier --write src/*.ts"
+    "format": "prettier --write src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/snoretrain/death-adder#readme",
   "devDependencies": {
-    "@types/jest": "^25.2.2",
+    "@types/jest": "26.0.23",
     "@types/node": "^14.0.1",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
@@ -45,8 +45,8 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.3",
-    "got": "^11.1.4",
-    "jest": "^26.0.1",
+    "got": "^11.8.2",
+    "jest": "^27.0.4",
     "prettier": "^2.0.5",
     "ts-jest": "^25.5.1",
     "ts-node": "^8.10.1",
@@ -70,6 +70,5 @@
         "tsConfig": "tsconfig.json"
       }
     }
-  },
-  "dependencies": {}
+  }
 }
