@@ -1,28 +1,31 @@
 import { Request, Response } from './network';
 import { Middleware, MiddlewareExecutor } from './middleware';
 
-export default class Endpoint extends MiddlewareExecutor {
+export default class Endpoint<
+  RequestT extends Request = Request,
+  ResponseT extends Response = Response
+> extends MiddlewareExecutor {
   constructor(middleware: Middleware[] = []) {
     super(middleware);
   }
 
-  get(request: Request, response: Response) {
+  get(request: RequestT, response: ResponseT) {
     response.notFound();
   }
 
-  post(request: Request, response: Response) {
+  post(request: RequestT, response: ResponseT) {
     response.notFound();
   }
 
-  put(request: Request, response: Response) {
+  put(request: RequestT, response: ResponseT) {
     response.notFound();
   }
 
-  delete(request: Request, response: Response) {
+  delete(request: RequestT, response: ResponseT) {
     response.notFound();
   }
 
-  patch(request: Request, response: Response) {
+  patch(request: RequestT, response: ResponseT) {
     response.notFound();
   }
 }

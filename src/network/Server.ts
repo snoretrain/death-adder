@@ -10,10 +10,21 @@ export default class Server {
 
   port: number;
 
-  constructor(router?: Router, port?: number) {
+  requestType: typeof Request;
+
+  responseType: typeof Response;
+
+  constructor(
+    router?: Router,
+    port?: number,
+    requestType: typeof Request = Request,
+    responseType: typeof Response = Response
+  ) {
     this.router = router;
     this.requestDispatcher = this.requestDispatcher.bind(this);
     this.port = port || 3000;
+    this.requestType = requestType;
+    this.responseType = responseType;
   }
 
   requestDispatcher(request: Request, response: Response) {
@@ -45,8 +56,8 @@ export default class Server {
   listen(port?: number) {
     this.server = http.createServer(
       {
-        ServerResponse: Response,
-        IncomingMessage: Request
+        ServerResponse: this.responseType,
+        IncomingMessage: this.requestType
       },
       this.requestDispatcher
     );

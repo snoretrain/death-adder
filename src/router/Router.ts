@@ -5,22 +5,25 @@ import Path, { VARIABLE } from '../path';
 import { Middleware, MiddlewareExecutor } from '../middleware';
 import { Node, Handler, Validator } from './internal';
 
-type HandlerInfo = {
+type HandlerInfo<R extends Request, S extends Response> = {
   remainingPath: string;
-  handler: Handler;
+  handler: Handler<R, S>;
   params?: { [key: string]: string };
 };
 
 type ValidatorArg = Validator | Validator[];
 
-export default class Router extends MiddlewareExecutor {
-  graph: ResourceGraph<Node>;
+export default class Router<
+  RequestT extends Request = Request,
+  ResponseT extends Response = Response
+> extends MiddlewareExecutor {
+  graph: ResourceGraph<Node<RequestT, ResponseT>>;
 
   variableName: string;
 
   constructor(middlewares: Middleware[] = []) {
     super(middlewares);
-    this.graph = new ResourceGraph<Node>();
+    this.graph = new ResourceGraph<Node<RequestT, ResponseT>>();
   }
 
   /**
@@ -32,7 +35,7 @@ export default class Router extends MiddlewareExecutor {
    */
   addHandler(
     path: string,
-    handler: Handler,
+    handler: Handler<RequestT, ResponseT>,
     validators?: ValidatorArg
   ): void {
     const resourcePath: Path = new Path(path);
@@ -82,10 +85,10 @@ export default class Router extends MiddlewareExecutor {
           break;
         }
         // There is a handler at the destination, create a unified state transition
-        const prevNode: Node = this.graph.getTransition(
-          state,
-          segmentString
-        );
+        const prevNode: Node<
+          RequestT,
+          ResponseT
+        > = this.graph.getTransition(state, segmentString);
         const stateCount = this.graph.numStates();
         const node = getNode(pathSegment, stateCount);
         this.graph.addTransition(state, segmentString, node);
@@ -120,10 +123,12 @@ export default class Router extends MiddlewareExecutor {
    *
    * @param path A path to retrive the relevant handler for.
    */
-  getAssociatedHandler(path: string): HandlerInfo {
+  getAssociatedHandler(
+    path: string
+  ): HandlerInfo<RequestT, ResponseT> {
     const resourcePath: Path = new Path(path);
     let state = 0;
-    let node: Node;
+    let node: Node<RequestT, ResponseT>;
     const params: { [key: string]: string } = {};
     for (const [index, pathSegment] of resourcePath.entries()) {
       let pathChunk = pathSegment.toString();
@@ -176,7 +181,7 @@ export default class Router extends MiddlewareExecutor {
     };
   }
 
-  async handleRequest(request: Request, response: Response) {
+  async handleRequest(request: RequestT, response: ResponseT) {
     const path = request.remainingPath;
     const {
       handler,
@@ -205,8 +210,8 @@ export default class Router extends MiddlewareExecutor {
 
   executeEndpointMethod(
     endpoint: Endpoint,
-    request: Request,
-    response: Response
+    request: RequestT,
+    response: ResponseT
   ) {
     switch (request.method) {
       case 'GET':
@@ -239,7 +244,10 @@ export default class Router extends MiddlewareExecutor {
   }
 
   isRouter(state: number, key: string): boolean {
-    const node: Node = this.graph.getTransition(state, key);
+    const node: Node<RequestT, ResponseT> = this.graph.getTransition(
+      state,
+      key
+    );
     if (!node) {
       return false;
     }

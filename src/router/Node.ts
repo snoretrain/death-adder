@@ -1,24 +1,28 @@
 import Endpoint from '../Endpoint';
 import { PathSegment } from '../path';
 import { Router } from './internal';
+import { Request, Response } from '../network';
 
-export type Handler = Router | Endpoint | typeof Endpoint;
+export type Handler<R extends Request, S extends Response> =
+  | Router<R, S>
+  | Endpoint<R, S>
+  | (new () => Endpoint<R, S>);
 
 export type Validator = (param: string) => boolean;
 
-export default class Node {
+export default class Node<R extends Request, S extends Response> {
   nextState: number;
 
   variableName: string;
 
-  handler: Handler;
+  handler: Handler<R, S>;
 
   validator: Validator;
 
   constructor(
     pathSegment?: PathSegment,
     nextState?: number,
-    handler?: Handler
+    handler?: Handler<R, S>
   ) {
     this.handler = handler;
     if (pathSegment.isVariable()) {

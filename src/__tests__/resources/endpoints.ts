@@ -1,4 +1,5 @@
 import { Request, Response, Endpoint } from '../../index';
+import PuppyRequest from './requests';
 
 export class CatEndpoint extends Endpoint {
   get(request: Request, response: Response) {
@@ -60,5 +61,11 @@ export class JSONEndpoint extends Endpoint {
 export class ForbiddenEndpoint extends Endpoint {
   get(request: Request, response: Response) {
     response.forbidden();
+  }
+}
+
+export class PuppyEndpoint extends Endpoint<PuppyRequest, Response> {
+  get(request: PuppyRequest, response: Response) {
+    response.send(request.puppy);
   }
 }
