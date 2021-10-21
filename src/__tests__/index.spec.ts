@@ -15,8 +15,10 @@ import {
   WorldEndpoint,
   ErrorEndpoint,
   JSONEndpoint,
-  ForbiddenEndpoint
+  ForbiddenEndpoint,
+  PuppyEndpoint
 } from './resources/endpoints';
+import PuppyRequest from './resources/requests';
 
 describe('Integration', () => {
   const server: Server = new Server();
@@ -349,19 +351,26 @@ describe('Integration', () => {
     });
   });
   describe('Server', () => {
+    let testServer: Server = new Server();
     it('can be started with a different port', async () => {
       const router: Router = new Router();
       router.addHandler('/dog', DogEndpoint);
-      server.terminate();
-      server.listen(4000);
-      server.setRouter(router);
+      testServer.setPort(4000);
+      testServer.listen();
+      testServer.setRouter(router);
       const result = await got('http://localhost:4000/dog');
       expect(result.statusCode).toEqual(200);
     });
+    it('can handle generic overrides', async () => {
+      const router = new Router<PuppyRequest>();
+      router.addHandler('/puppy', PuppyEndpoint);
+      testServer = new Server(router, 4000, PuppyRequest);
+      testServer.listen();
+      const result = await got('http://localhost:4000/puppy');
+      expect(result.body).toBe('Labradoodle');
+    });
     afterEach(() => {
-      server.terminate();
-      server.setPort(3000);
-      server.listen();
+      testServer.terminate();
     });
   });
   afterAll(() => {
